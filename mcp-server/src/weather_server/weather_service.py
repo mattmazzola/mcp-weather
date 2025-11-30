@@ -1,11 +1,9 @@
-import argparse
+"""
+Core weather service logic - shared between MCP and REST API
+"""
 from typing import Any
 
 import httpx
-from mcp.server.fastmcp import FastMCP
-
-# Initialize FastMCP server
-mcp = FastMCP("weather")
 
 # Constants
 NWS_API_BASE = "https://api.weather.gov"
@@ -36,12 +34,14 @@ Instructions: {props.get('instruction', 'No specific instructions provided')}
 """
 
 
-@mcp.tool()
-async def get_alerts(state: str) -> str:
+async def get_alerts_for_state(state: str) -> str:
     """Get weather alerts for a US state.
 
     Args:
         state: Two-letter US state code (e.g. CA, NY)
+
+    Returns:
+        Formatted string with alert information
     """
     url = f"{NWS_API_BASE}/alerts/active/area/{state}"
     data = await make_nws_request(url)
@@ -56,13 +56,15 @@ async def get_alerts(state: str) -> str:
     return "\n---\n".join(alerts)
 
 
-@mcp.tool()
-async def get_forecast(latitude: float, longitude: float) -> str:
+async def get_forecast_for_location(latitude: float, longitude: float) -> str:
     """Get weather forecast for a location.
 
     Args:
         latitude: Latitude of the location
         longitude: Longitude of the location
+
+    Returns:
+        Formatted string with forecast information
     """
     # First get the forecast grid endpoint
     points_url = f"{NWS_API_BASE}/points/{latitude},{longitude}"
@@ -91,21 +93,3 @@ Forecast: {period['detailedForecast']}
         forecasts.append(forecast)
 
     return "\n---\n".join(forecasts)
-
-def main():
-    parser = argparse.ArgumentParser(description='Weather MCP Server')
-    parser.add_argument(
-        '--transport',
-        choices=['stdio', 'sse'],
-        default='stdio',
-        help='Transport mode: stdio for local clients, sse for network clients (default: stdio)'
-    )
-
-    args = parser.parse_args()
-
-    # Run with the specified transport
-    # Note: SSE transport will run on a default port (usually 8000 or as configured by the framework)
-    mcp.run(transport=args.transport)
-
-if __name__ == "__main__":
-    main()

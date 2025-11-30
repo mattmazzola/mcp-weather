@@ -1,16 +1,16 @@
 [project]
-name = "mcp-server"
+name = "weather-server"
 version = "0.1.0"
-description = "Add your description here"
+description = "Weather MCP Server and REST API"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "httpx>=0.28.1",
     "mcp[cli]>=1.22.0",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "pydantic>=2.10.0",
 ]
-
-[project.scripts]
-weather = "weather:main"
 
 [tool.uv]
 package = true
