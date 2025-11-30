@@ -12,5 +12,8 @@ dependencies = [
     "pydantic>=2.10.0",
 ]
 
+[project.scripts]
+weather_server = "weather_server.server:main"
+
 [tool.uv]
 package = true

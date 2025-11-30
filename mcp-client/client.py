@@ -157,7 +157,7 @@ async def main():
         print("Connecting to weather MCP server...")
         await client.connect_to_server(
             command="uv",
-            args=["--directory", "../mcp-server", "run", "python", "-m", "weather_server"]
+            args=["--directory", "../mcp-server", "run", "weather_server"]
         )
         await client.chat_loop()
     finally:

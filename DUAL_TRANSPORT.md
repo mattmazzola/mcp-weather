@@ -8,7 +8,7 @@ Use this for clients running in the same environment (e.g., your Python client):
 
 ```bash
 cd mcp-server
-uv run python -m weather_server
+uv run weather_server
 ```
 
 This is used by your existing `mcp-client/client.py` and works perfectly inside the devcontainer.
@@ -32,7 +32,7 @@ Add this to your **User settings** on the host machine (`~/.config/Code/User/set
         "5d649272e1d8",
         "/bin/bash",
         "-c",
-        "cd /workspaces/mcp-weather/mcp-server && /usr/local/bin/uv run python -m weather_server"
+        "cd /workspaces/mcp-weather/mcp-server && /usr/local/bin/uv run weather_server"
       ]
     }
   }

@@ -11,9 +11,9 @@ This server supports both MCP and REST API modes. See [ARCHITECTURE.md](ARCHITEC
 For local clients like the Python client:
 
 ```sh
-uv run python -m weather_server
+uv run weather_server
 # or with explicit mode:
-uv run python -m weather_server --mode mcp --transport stdio
+uv run weather_server --mode mcp --transport stdio
 ```
 
 ### Start MCP Server (SSE Mode)
@@ -21,19 +21,19 @@ uv run python -m weather_server --mode mcp --transport stdio
 For remote clients (e.g., VS Code Copilot Chat on host machine):
 
 ```sh
-uv run python -m weather_server --mode mcp --transport sse
+uv run weather_server --mode mcp --transport sse
 ```
 
 ### Start REST API Server
 
 ```sh
-uv run python -m weather_server --mode api --api-port 8080
+uv run weather_server --mode api --api-port 8080
 ```
 
 ### Start Both MCP and REST API
 
 ```sh
-uv run python -m weather_server --mode both --mcp-port 8000 --api-port 8080
+uv run weather_server --mode both --mcp-port 8000 --api-port 8080
 ```
 
 ## Documentation

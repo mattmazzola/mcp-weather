@@ -60,29 +60,29 @@ This project demonstrates **best practices** for running FastMCP and FastAPI sid
 ### 1. Run MCP Server Only (stdio - for local clients)
 
 ```bash
-uv run python -m weather_server --mode mcp --transport stdio
-# or simply:
-uv run python -m weather_server
+uv run weather_server
+# or explicitly:
+uv run weather_server --mode mcp --transport stdio
 ```
 
 ### 2. Run MCP Server Only (SSE - for network clients)
 
 ```bash
-uv run python -m weather_server --mode mcp --transport sse
+uv run weather_server --mode mcp --transport sse
 # Runs on http://localhost:8000/sse
 ```
 
 ### 3. Run REST API Only
 
 ```bash
-uv run python -m weather_server --mode api --api-port 8080
+uv run weather_server --mode api --api-port 8080
 # Access at http://localhost:8080
 ```
 
 ### 4. Run Both MCP (SSE) and REST API
 
 ```bash
-uv run python -m weather_server --mode both --mcp-port 8000 --api-port 8080
+uv run weather_server --mode both --mcp-port 8000 --api-port 8080
 # MCP on http://localhost:8000/sse
 # API on http://localhost:8080
 ```
