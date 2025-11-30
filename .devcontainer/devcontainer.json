@@ -53,6 +53,8 @@
     "postStartCommand": "bash ./.devcontainer/postStartCommand.sh",
     "runArgs": [
         "--env-file",
-        ".devcontainer/devcontainer.env"
+        ".devcontainer/devcontainer.env",
+        "--env-file",
+        ".devcontainer/devcontainer.env.local"
     ]
 }

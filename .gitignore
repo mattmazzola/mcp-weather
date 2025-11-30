@@ -1,4 +1,2 @@
 # Local environment variables
-.env
-
-!.devcontainer/devcontainer.env
+*.env*.local
