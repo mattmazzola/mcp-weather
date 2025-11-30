@@ -1,0 +1,22 @@
+# Normalize all text files
+*           text=auto eol=lf
+
+# Scripts
+*.sh        text eol=lf
+
+# Markdown Files
+*.md        text diff=markdown
+
+# Serialisation
+*.json      text
+*.toml      text
+*.xml       text
+*.yaml      text
+*.yml       text
+
+#
+# Exclude files from exporting
+#
+.gitattributes export-ignore
+.gitignore     export-ignore
+.gitkeep       export-ignore

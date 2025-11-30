@@ -1,0 +1,21 @@
+{
+    "folders": [
+        {
+            "path": "."
+        },
+    ],
+    "settings": {
+        "dotenv.enableAutocloaking": false,
+        "terminal.integrated.cwd": "${workspaceFolder}",
+        "files.watcherExclude": {
+            "**/.git/objects/**": true,
+            "**/.git/subtree-cache/**": true,
+            "**/.hg/store/**": true
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "EditorConfig.EditorConfig"
+        ]
+    }
+}
