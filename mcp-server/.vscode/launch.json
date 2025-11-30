@@ -1,0 +1,57 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug MCP Server (stdio)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "weather_server.server",
+      "args": ["--mode", "mcp", "--transport", "stdio"],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    {
+      "name": "Debug MCP Server (SSE)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "weather_server.server",
+      "args": ["--mode", "mcp", "--transport", "sse"],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    {
+      "name": "Debug REST API",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "weather_server.server",
+      "args": ["--mode", "api", "--api-port", "8082"],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    {
+      "name": "Debug Both Servers",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "weather_server.server",
+      "args": ["--mode", "both", "--mcp-port", "8000", "--api-port", "8082"],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  ]
+}
