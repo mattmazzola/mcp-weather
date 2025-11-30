@@ -16,6 +16,8 @@ mcp = FastMCP("weather")
 # Constants
 NWS_API_BASE = "https://api.weather.gov"
 USER_AGENT = "weather-app/1.0"
+DEFAULT_TIMEOUT = 30.0
+MAX_FORECAST_PERIODS = 5
 
 
 async def make_nws_request(url: str) -> dict | None:
@@ -26,10 +28,14 @@ async def make_nws_request(url: str) -> dict | None:
     }
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.get(url, headers=headers, timeout=30.0)
+            response = await client.get(url, headers=headers, timeout=DEFAULT_TIMEOUT)
             response.raise_for_status()
             return response.json()
-        except httpx.HTTPError:
+        except httpx.TimeoutException:
+            return None
+        except httpx.HTTPStatusError:
+            return None
+        except httpx.RequestError:
             return None
 
 
@@ -106,7 +112,7 @@ async def get_forecast(latitude: float, longitude: float) -> str:
         return "No forecast periods available."
 
     forecasts = []
-    for period in periods[:5]:  # Show first 5 periods
+    for period in periods[:MAX_FORECAST_PERIODS]:
         forecast = f"""
 {period.get('name', 'Unknown')}:
 Temperature: {period.get('temperature', 'N/A')}°{period.get('temperatureUnit', 'F')}
