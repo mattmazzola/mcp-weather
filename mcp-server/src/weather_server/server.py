@@ -1,15 +1,34 @@
-"""
-Unified entry point for Weather MCP Server and REST API
+"""Unified entry point for Weather MCP Server and REST API
 
 Supports three modes:
   - mcp: Run MCP server only (stdio or SSE)
   - api: Run REST API server only
   - both: Run both MCP (SSE) and REST API simultaneously
 """
-import argparse
+from enum import Enum
 
+import typer
 import uvicorn
-from fastapi import FastAPI
+
+
+class ServerMode(str, Enum):
+    """Server operation modes"""
+    mcp = "mcp"
+    api = "api"
+    both = "both"
+
+
+class Transport(str, Enum):
+    """MCP transport types"""
+    stdio = "stdio"
+    sse = "sse"
+
+
+app = typer.Typer(
+    name="weather_server",
+    help="Weather Server - MCP and/or REST API",
+    add_completion=False,
+)
 
 
 def run_mcp_only(transport: str = 'stdio'):
@@ -41,77 +60,65 @@ def run_both(mcp_port: int = 8000, api_port: int = 8080, host: str = "0.0.0.0"):
     )
     mcp_thread.start()
 
-    print(f"MCP Server (SSE): http://{host}:{mcp_port}/sse")
-    print(f"REST API: http://{host}:{api_port}")
+    typer.echo(f"MCP Server (SSE): http://{host}:{mcp_port}/sse")
+    typer.echo(f"REST API: http://{host}:{api_port}")
 
     # Run FastAPI server (blocks until stopped)
     uvicorn.run(app, host=host, port=api_port)
-def main():
-    parser = argparse.ArgumentParser(
-        description='Weather Server - MCP and/or REST API',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # MCP server only (stdio for local clients)
-  python server.py --mode mcp --transport stdio
 
-  # MCP server only (SSE for network clients)
-  python server.py --mode mcp --transport sse
 
-  # REST API only
-  python server.py --mode api --api-port 8080
+@app.command()
+def cli(
+    mode: ServerMode = typer.Option(
+        ServerMode.mcp,
+        help="Server mode: mcp (MCP only), api (REST API only), both (run both)"
+    ),
+    transport: Transport = typer.Option(
+        Transport.stdio,
+        help="MCP transport mode (only used when mode=mcp)"
+    ),
+    mcp_port: int = typer.Option(
+        8000,
+        "--mcp-port",
+        help="Port for MCP SSE server (used when mode=both)"
+    ),
+    api_port: int = typer.Option(
+        8080,
+        "--api-port",
+        help="Port for REST API server"
+    ),
+    host: str = typer.Option(
+        "0.0.0.0",
+        help="Host to bind servers to"
+    ),
+):
+    """
+    Weather Server - Run MCP server, REST API, or both
 
-  # Both MCP (SSE) and REST API
-  python server.py --mode both --mcp-port 8000 --api-port 8080
-        """
-    )
+    Examples:
 
-    parser.add_argument(
-        '--mode',
-        choices=['mcp', 'api', 'both'],
-        default='mcp',
-        help='Server mode: mcp (MCP only), api (REST API only), both (run both)'
-    )
+      MCP server only (stdio for local clients):
+      $ weather_server --mode mcp --transport stdio
 
-    parser.add_argument(
-        '--transport',
-        choices=['stdio', 'sse'],
-        default='stdio',
-        help='MCP transport mode (only used when mode=mcp)'
-    )
+      MCP server only (SSE for network clients):
+      $ weather_server --mode mcp --transport sse
 
-    parser.add_argument(
-        '--mcp-port',
-        type=int,
-        default=8000,
-        help='Port for MCP SSE server (default: 8000, used when mode=both)'
-    )
+      REST API only:
+      $ weather_server --mode api --api-port 8080
 
-    parser.add_argument(
-        '--api-port',
-        type=int,
-        default=8080,
-        help='Port for REST API server (default: 8080)'
-    )
-
-    parser.add_argument(
-        '--host',
-        default='0.0.0.0',
-        help='Host to bind servers to (default: 0.0.0.0)'
-    )
-
-    args = parser.parse_args()
-
-    if args.mode == 'mcp':
-        print(f"Starting MCP server (transport: {args.transport})...")
-        run_mcp_only(transport=args.transport)
-    elif args.mode == 'api':
-        print(f"Starting REST API server on {args.host}:{args.api_port}...")
-        run_api_only(port=args.api_port, host=args.host)
-    elif args.mode == 'both':
-        print("Starting both MCP (SSE) and REST API servers...")
-        run_both(mcp_port=args.mcp_port, api_port=args.api_port, host=args.host)
+      Both MCP (SSE) and REST API:
+      $ weather_server --mode both --mcp-port 8000 --api-port 8080
+    """
+    if mode == ServerMode.mcp:
+        typer.echo(f"Starting MCP server (transport: {transport.value})...")
+        run_mcp_only(transport=transport.value)
+    elif mode == ServerMode.api:
+        typer.echo(f"Starting REST API server on {host}:{api_port}...")
+        run_api_only(port=api_port, host=host)
+    elif mode == ServerMode.both:
+        typer.echo("Starting both MCP (SSE) and REST API servers...")
+        run_both(mcp_port=mcp_port, api_port=api_port, host=host)
 
 
 if __name__ == "__main__":
-    main()
+    app()
