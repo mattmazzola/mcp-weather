@@ -1,3 +1,4 @@
+import argparse
 from typing import Any
 
 import httpx
@@ -92,8 +93,19 @@ Forecast: {period['detailedForecast']}
     return "\n---\n".join(forecasts)
 
 def main():
-    # Initialize and run the server
-    mcp.run(transport='stdio')
+    parser = argparse.ArgumentParser(description='Weather MCP Server')
+    parser.add_argument(
+        '--transport',
+        choices=['stdio', 'sse'],
+        default='stdio',
+        help='Transport mode: stdio for local clients, sse for network clients (default: stdio)'
+    )
+
+    args = parser.parse_args()
+
+    # Run with the specified transport
+    # Note: SSE transport will run on a default port (usually 8000 or as configured by the framework)
+    mcp.run(transport=args.transport)
 
 if __name__ == "__main__":
     main()
