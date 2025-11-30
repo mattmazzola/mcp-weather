@@ -7,27 +7,9 @@ Supports three modes:
   - both: Run both MCP (SSE) and REST API simultaneously
 """
 import argparse
-import asyncio
-from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
-
-
-@asynccontextmanager
-async def lifespan_with_mcp(app: FastAPI):
-    """Lifespan manager that starts MCP server alongside FastAPI"""
-    from weather_mcp import mcp
-
-    # Start MCP server in background
-    mcp_task = asyncio.create_task(
-        asyncio.to_thread(mcp.run, transport='sse')
-    )
-
-    yield
-
-    # Cleanup (note: this won't actually stop the MCP server cleanly in current implementation)
-    mcp_task.cancel()
 
 
 def run_mcp_only(transport: str = 'stdio'):
@@ -50,21 +32,20 @@ def run_both(mcp_port: int = 8000, api_port: int = 8080, host: str = "0.0.0.0"):
     """
     from .weather_api import app
     from .weather_mcp import mcp
-
-    # Start MCP server in background thread
     import threading
+
+    # Start MCP server in daemon thread
     mcp_thread = threading.Thread(
         target=lambda: mcp.run(transport='sse'),
         daemon=True
     )
     mcp_thread.start()
 
-    # Run FastAPI on different port
     print(f"MCP Server (SSE): http://{host}:{mcp_port}/sse")
     print(f"REST API: http://{host}:{api_port}")
+
+    # Run FastAPI server (blocks until stopped)
     uvicorn.run(app, host=host, port=api_port)
-
-
 def main():
     parser = argparse.ArgumentParser(
         description='Weather Server - MCP and/or REST API',
