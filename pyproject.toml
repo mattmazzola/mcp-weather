@@ -1,0 +1,17 @@
+[project]
+name = "mcp-weather"
+version = "0.1.0"
+description = "MCP Weather Server using FastMCP"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastmcp>=2.0.0",
+    "httpx>=0.28.0",
+]
+
+[project.scripts]
+mcp-weather = "weather:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

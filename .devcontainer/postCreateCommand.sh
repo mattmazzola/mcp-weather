@@ -4,7 +4,7 @@ set -e
 
 echo "INSTALLING PROJECT DEPENDENCIES"
 
-# Uncomment after you have setup your UV project
-# uv sync
+# Install project dependencies with UV
+uv sync
 
 echo "postCreateCommand.sh finished!"
